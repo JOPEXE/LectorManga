@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App Name -->
+    <string name="app_name">Lector Manga</string>
+
+    <!-- MainActivity -->
+    <string name="tv_titulo">📚 Lector Manga</string>
+    <string name="search_hint">Buscar manga...</string>
+    <string name="btn_buscar">Buscar</string>
+    <string name="popular_mangas_title">Mangas Populares</string>
+    <string name="loading_mangas">🔄 Cargando mangas populares...</string>
+    <string name="mangas_loaded">✅ %d mangas populares cargados</string>
+    <string name="searching">🔍 Buscando: %s...</string>
+    <string name="search_results">✅ %d resultados para: %s</string>
+    <string name="no_search_results">❌ No se encontraron mangas para: %s</string>
+    <string name="no_results_found">No se encontraron resultados</string>
+    <string name="enter_search_term">Ingresa un término de búsqueda</string>
+    <string name="mangas_from_mangadx">Mangas cargados desde MangaDex</string>
+    <string name="found_mangas">Encontrados %d mangas</string>
+    <string name="error_loading_mangas">❌ Error al cargar mangas</string>
+    <string name="error_search">❌ Error en la búsqueda</string>
+
+    <!-- ChaptersActivity -->
+    <string name="chapters_title">📖 Capítulos</string>
+    <string name="loading_chapters">🔄 Cargando capítulos desde MangaDex...</string>
+    <string name="chapters_loaded">✅ %d capítulos disponibles</string>
+    <string name="no_chapters_english">❌ No se encontraron capítulos en inglés</string>
+    <string name="chapters_from_mangadx">Capítulos cargados desde MangaDx</string>
+    <string name="no_chapters_available">No hay capítulos disponibles en inglés</string>
+    <string name="error_loading_chapters">❌ Error al cargar capítulos</string>
+    <string name="opening_chapter">Abriendo capítulo %s</string>
+    <string name="error_invalid_manga_id">Error: No hay datos del manga</string>
+
+    <!-- ReaderActivity -->
+    <string name="page_indicator">Página %1$d de %2$d</string>
+    <string name="current_page_format">%1$d / %2$d</string>
+    <string name="btn_previous">⬅ Anterior</string>
+    <string name="btn_next">Siguiente ➡</string>
+    <string name="btn_finish">Terminar</string>
+    <string name="loading_pages">🔄 Cargando páginas desde MangaDX...</string>
+    <string name="pages_ready">✅ %d páginas listas para leer</string>
+    <string name="pages_loaded">📖 %d páginas cargadas desde MangaDX</string>
+    <string name="chapter_finished">✅ ¡Capítulo terminado!</string>
+    <string name="loading_images">📖 Cargando imágenes... (%1$d/%2$d)</string>
+    <string name="no_pages_found">❌ No se encontraron páginas para este capítulo</string>
+    <string name="no_pages_available">Este capítulo no tiene páginas disponibles</string>
+    <string name="error_invalid_chapter_id">❌ Error: ID de capítulo no válido</string>
+    <string name="error_loading_pages">❌ Error al cargar páginas: %s</string>
+    <string name="error_loading_page">Error al cargar página %d</string>
+    <string name="connection_error">Error de conexión: %s</string>
+
+    <!-- Item Manga -->
+    <string name="tap_to_view_chapters">👆 Toca para ver capítulos</string>
+    <string name="selected_manga">Seleccionado: %s</string>
+    <string name="opening_manga">Abriendo %s</string>
+
+    <!-- Item Chapter -->
+    <string name="chapter_number">#%s</string>
+    <string name="chapter_title_format">Capítulo %s</string>
+    <string name="pages_count">%s páginas</string>
+    <string name="selected_chapter">Capítulo %s\n(Próximamente: lector)</string>
+
+    <!-- Item Page -->
+    <string name="page_number">%d</string>
+
+    <!-- General -->
+    <string name="manga_title">Manga</string>
+    <string name="chapter_title">Capítulo</string>
+    <string name="no_title">Sin título</string>
+    <string name="no_description">Sin descripción disponible</string>
+    <string name="pages_text">páginas</string>
+    <string name="page_text">página</string>
+
+    <!-- Activity Labels -->
+    <string name="chapters_activity_label">Capítulos</string>
+    <string name="reader_activity_label">Lector</string>
+
+    <!-- Error Messages -->
+    <string name="error_connection">Error de conexión</string>
+    <string name="error_http">Error HTTP: %d</string>
+    <string name="error_processing_data">Error al procesar datos</string>
+    <string name="error_generic">Error: %s</string>
+
+    <!-- Status Messages -->
+    <string name="status_recyclerview_configured">RecyclerView con adapter configurado</string>
+    <string name="status_search">Búsqueda: %s</string>
+    <string name="status_ready">¡Lista de mangas lista! 📚</string>
+    <string name="status_data_ready">Datos de prueba listos</string>
+
+    <!-- Formatting -->
+    <string name="manga_chapter_format">%1$s - Capítulo %2$s</string>
+    <string name="manga_chapter_title_format">%1$s - Capítulo %2$s: %3$s</string>
+</resources>

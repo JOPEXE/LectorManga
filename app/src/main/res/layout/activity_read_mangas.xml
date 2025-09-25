@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F8F9FA"
+    tools:context=".ReadMangasActivity">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/design_default_color_primary"
+        android:padding="16dp"
+        android:elevation="4dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📚 Mis Mangas"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+    <!-- Descripción -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mangas guardados en tu dispositivo"
+        android:textSize="14sp"
+        android:textColor="#666666"
+        android:padding="16dp"
+        android:background="@android:color/white"
+        android:gravity="center" />
+
+    <!-- Estadísticas -->
+    <TextView
+        android:id="@+id/statsText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="📊 Cargando estadísticas..."
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="@color/design_default_color_primary"
+        android:padding="12dp"
+        android:background="#F0F0F0"
+        android:gravity="center" />
+
+    <!-- Status text -->
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cargando mangas guardados..."
+        android:textSize="16sp"
+        android:padding="16dp"
+        android:gravity="center"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Lista de mangas guardados -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/white"
+        android:padding="8dp" />
+
+    <!-- Footer con información -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#EEEEEE"
+        android:padding="12dp"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Acceso offline"
+            android:textSize="12sp"
+            android:textColor="#666666"
+            android:textStyle="italic" />
+
+    </LinearLayout>
+
+</LinearLayout>

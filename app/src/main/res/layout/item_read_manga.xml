@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <!-- Imagen del manga -->
+        <ImageView
+            android:id="@+id/mangaCover"
+            android:layout_width="70dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/placeholder_manga"
+            android:layout_marginEnd="16dp" />
+
+        <!-- Información del manga -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- Título -->
+            <TextView
+                android:id="@+id/mangaTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Título del Manga"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:maxLines="2"
+                android:ellipsize="end" />
+
+            <!-- Descripción -->
+            <TextView
+                android:id="@+id/mangaDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Descripción del manga"
+                android:textSize="13sp"
+                android:textColor="#666666"
+                android:layout_marginTop="4dp"
+                android:maxLines="2"
+                android:ellipsize="end" />
+
+            <!-- Información de lectura -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <!-- Estado de lectura -->
+                <TextView
+                    android:id="@+id/statusInfo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="📖 Leyendo"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/design_default_color_primary"
+                    android:background="#E8F5E8"
+                    android:padding="4dp"
+                    android:gravity="center" />
+
+                <!-- Indicador offline -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="💾 OFFLINE"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"
+                    android:background="#4CAF50"
+                    android:padding="4dp"
+                    android:layout_marginStart="8dp" />
+
+            </LinearLayout>
+
+            <!-- Último capítulo leído -->
+            <TextView
+                android:id="@+id/lastChapterInfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Último capítulo: 15"
+                android:textSize="12sp"
+                android:textColor="#888888"
+                android:layout_marginTop="4dp"
+                android:textStyle="italic" />
+
+            <!-- Indicador de toque -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="👆 Toca para continuar leyendo"
+                android:textSize="11sp"
+                android:textColor="@color/design_default_color_primary"
+                android:layout_marginTop="6dp"
+                android:textStyle="italic" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

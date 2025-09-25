@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F8F9FA"
+    tools:context=".MainActivity">
+
+    <!-- Header con título de la app -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/design_default_color_primary"
+        android:padding="16dp"
+        android:elevation="4dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📚 Lector Manga"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Barra de búsqueda ARRIBA -->
+        <EditText
+            android:id="@+id/et_buscador"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@android:color/white"
+            android:hint="Buscar manga..."
+            android:textColorHint="#757575"
+            android:textColor="@android:color/black"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:inputType="text"
+            android:maxLines="1"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Botones ABAJO en horizontal -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_buscar"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="Buscar"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/design_default_color_secondary"
+                android:layout_marginEnd="4dp" />
+
+            <Button
+                android:id="@+id/btn_mis_mangas"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="📚 Mis Mangas"
+                android:textColor="@android:color/white"
+                android:backgroundTint="#FF5722"
+                android:layout_marginStart="4dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Separador -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0" />
+
+    <!-- Título de la sección -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mangas Populares"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:padding="16dp"
+        android:background="@android:color/white" />
+
+    <!-- Status text -->
+    <TextView
+        android:id="@+id/tv_estado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cargando mangas..."
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:padding="8dp"
+        android:gravity="center"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Lista de mangas -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#F5F5F5"
+        android:padding="8dp" />
+
+</LinearLayout>
