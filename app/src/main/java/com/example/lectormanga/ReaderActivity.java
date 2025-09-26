@@ -2,6 +2,7 @@ package com.example.lectormanga;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.lectormanga.adapter.PageAdapter;
 import com.example.lectormanga.api.MangaDexApi;
 import com.example.lectormanga.database.MangaDAO;
+import com.example.lectormanga.model.Chapter;
 import com.example.lectormanga.model.Manga;
 
 import java.util.ArrayList;
@@ -38,17 +40,16 @@ public class ReaderActivity extends AppCompatActivity implements PageAdapter.OnP
     private int loadedPages = 0;
 
     private MangaDexApi mangaDxApi;
-    private MangaDAO mangaDAO; // ✅ AGREGADO
+    private MangaDAO mangaDAO;
+    private boolean fromOffline = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reader);
 
-        // Inicializar API
+        // Inicializar API y DAO
         mangaDxApi = new MangaDexApi();
-
-        // ✅ AGREGADO - Inicializar base de datos
         mangaDAO = new MangaDAO(this);
 
         // Inicializar vistas
@@ -63,8 +64,12 @@ public class ReaderActivity extends AppCompatActivity implements PageAdapter.OnP
         // Configurar controles
         setupControls();
 
-        // Cargar páginas reales de la API
-        loadRealPages();
+        // Cargar páginas (online u offline)
+        if (fromOffline) {
+            loadOfflinePages();
+        } else {
+            loadRealPages();
+        }
     }
 
     private void initViews() {
@@ -85,9 +90,10 @@ public class ReaderActivity extends AppCompatActivity implements PageAdapter.OnP
             chapterTitleText = intent.getStringExtra("chapter_title");
             chapterNumber = intent.getStringExtra("chapter_number");
             mangaTitle = intent.getStringExtra("manga_title");
+            fromOffline = intent.getBooleanExtra("from_offline", false);
         }
 
-        // Valores por defecto si no hay datos
+        // Valores por defecto
         if (mangaTitle == null) mangaTitle = "Manga";
         if (chapterNumber == null) chapterNumber = "1";
         if (chapterTitleText == null) chapterTitleText = "Capítulo";
@@ -108,11 +114,9 @@ public class ReaderActivity extends AppCompatActivity implements PageAdapter.OnP
         recyclerViewPages.setLayoutManager(layoutManager);
         recyclerViewPages.setAdapter(pageAdapter);
 
-        // Snap helper para páginas
         PagerSnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(recyclerViewPages);
 
-        // Listener para detectar cambio de página
         recyclerViewPages.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -125,31 +129,26 @@ public class ReaderActivity extends AppCompatActivity implements PageAdapter.OnP
     }
 
     private void setupControls() {
-        btnPrevious.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentPage > 0) {
-                    currentPage--;
-                    recyclerViewPages.smoothScrollToPosition(currentPage);
-                    updatePageIndicators();
-                }
+        btnPrevious.setOnClickListener(v -> {
+            if (currentPage > 0) {
+                currentPage--;
+                recyclerViewPages.smoothScrollToPosition(currentPage);
+                updatePageIndicators();
             }
         });
 
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentPage < totalPages - 1) {
-                    currentPage++;
-                    recyclerViewPages.smoothScrollToPosition(currentPage);
-                    updatePageIndicators();
-                } else {
-                    Toast.makeText(ReaderActivity.this, "✅ ¡Capítulo terminado!", Toast.LENGTH_SHORT).show();
-                }
+        btnNext.setOnClickListener(v -> {
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                recyclerViewPages.smoothScrollToPosition(currentPage);
+                updatePageIndicators();
+            } else {
+                Toast.makeText(ReaderActivity.this, "✅ ¡Capítulo terminado!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    // ========== CARGA ONLINE ==========
     private void loadRealPages() {
         if (chapterId == null) {
             statusText.setVisibility(View.VISIBLE);
@@ -157,9 +156,8 @@ public class ReaderActivity extends AppCompatActivity implements PageAdapter.OnP
             return;
         }
 
-        // Mostrar estado de carga
         statusText.setVisibility(View.VISIBLE);
-        statusText.setText("🔄 Cargando páginas desde MangaDX...");
+        statusText.setText("🔄 Cargando páginas desde MangaDex...");
         progressBar.setVisibility(View.VISIBLE);
 
         mangaDxApi.getChapterPages(chapterId, new MangaDexApi.PageCallback() {
@@ -167,7 +165,7 @@ public class ReaderActivity extends AppCompatActivity implements PageAdapter.OnP
             public void onSuccess(List<String> urls) {
                 runOnUiThread(() -> {
                     if (urls.isEmpty()) {
-                        statusText.setText("❌ No se encontraron páginas para este capítulo");
+                        statusText.setText("❌ No se encontraron páginas");
                         progressBar.setVisibility(View.GONE);
                         Toast.makeText(ReaderActivity.this, "Este capítulo no tiene páginas disponibles", Toast.LENGTH_LONG).show();
                         return;
@@ -176,22 +174,19 @@ public class ReaderActivity extends AppCompatActivity implements PageAdapter.OnP
                     totalPages = urls.size();
                     loadedPages = 0;
 
-                    // Actualizar adapter con URLs reales
                     pageUrls.clear();
                     pageUrls.addAll(urls);
                     pageAdapter.notifyDataSetChanged();
 
-                    // Actualizar indicadores
                     updatePageIndicators();
 
-                    statusText.setText("📖 " + totalPages + " páginas cargadas desde MangaDX");
+                    statusText.setText("📖 " + totalPages + " páginas cargadas desde MangaDex");
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(ReaderActivity.this, "✅ " + totalPages + " páginas listas para leer", Toast.LENGTH_SHORT).show();
 
-                    // ✅ GUARDADO AUTOMÁTICO - Después de que las páginas se cargan exitosamente
-                    saveMangaToDatabase();
+                    // ✅ GUARDADO COMPLETO OFFLINE
+                    saveCompleteMangaOffline(urls);
 
-                    // Ocultar status después de 3 segundos
                     statusText.postDelayed(() -> {
                         if (statusText != null) {
                             statusText.setVisibility(View.GONE);
@@ -211,32 +206,129 @@ public class ReaderActivity extends AppCompatActivity implements PageAdapter.OnP
         });
     }
 
-    // ✅ NUEVO MÉTODO - Guardado automático en SQLite
-    private void saveMangaToDatabase() {
-        if (mangaTitle == null || chapterId == null) return;
-
-        // Obtener ID del manga desde el intent (si está disponible)
-        String mangaId = getIntent().getStringExtra("manga_id");
-        if (mangaId == null) mangaId = chapterId; // Usar chapterId como fallback
-
-        // Crear objeto manga con la información disponible
-        Manga manga = new Manga();
-        manga.setId(mangaId);
-        manga.setTitle(mangaTitle);
-        manga.setDescription(getIntent().getStringExtra("manga_description") != null ?
-                getIntent().getStringExtra("manga_description") :
-                "Manga leído desde el lector");
-        manga.setCoverUrl(getIntent().getStringExtra("manga_cover") != null ?
-                getIntent().getStringExtra("manga_cover") : "");
-
-        // Guardar en base de datos
-        long result = mangaDAO.addReadManga(manga, chapterNumber, "reading");
-
-        if (result > 0) {
-            runOnUiThread(() -> {
-                Toast.makeText(ReaderActivity.this, "📚 Manga guardado en biblioteca personal", Toast.LENGTH_SHORT).show();
-            });
+    // ========== CARGA OFFLINE ==========
+    private void loadOfflinePages() {
+        if (chapterId == null) {
+            statusText.setVisibility(View.VISIBLE);
+            statusText.setText("❌ Error: ID de capítulo no válido");
+            return;
         }
+
+        statusText.setVisibility(View.VISIBLE);
+        statusText.setText("💾 Cargando páginas desde SQLite...");
+        progressBar.setVisibility(View.VISIBLE);
+
+        new Thread(() -> {
+            List<String> offlineUrls = mangaDAO.getPageUrlsByChapterId(chapterId);
+
+            runOnUiThread(() -> {
+                if (offlineUrls.isEmpty()) {
+                    statusText.setText("❌ No hay páginas guardadas offline");
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(ReaderActivity.this, "Este capítulo no está disponible offline", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                totalPages = offlineUrls.size();
+                pageUrls.clear();
+                pageUrls.addAll(offlineUrls);
+                pageAdapter.notifyDataSetChanged();
+
+                updatePageIndicators();
+
+                statusText.setText("✅ " + totalPages + " páginas cargadas (OFFLINE)");
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(ReaderActivity.this, "📚 Leyendo offline: " + totalPages + " páginas", Toast.LENGTH_SHORT).show();
+
+                statusText.postDelayed(() -> {
+                    if (statusText != null) {
+                        statusText.setVisibility(View.GONE);
+                    }
+                }, 3000);
+            });
+        }).start();
+    }
+
+    // ========== GUARDADO OFFLINE COMPLETO ==========
+    private void saveCompleteMangaOffline(List<String> pageUrls) {
+        new Thread(() -> {
+            try {
+                String mangaId = getIntent().getStringExtra("manga_id");
+                if (mangaId == null) mangaId = chapterId;
+
+                // 1. Guardar/Actualizar manga con imagen (solo si no existe)
+                if (!mangaDAO.isMangaRead(mangaId)) {
+                    Manga manga = new Manga();
+                    manga.setId(mangaId);
+                    manga.setTitle(mangaTitle != null ? mangaTitle : "Manga");
+                    manga.setDescription(getIntent().getStringExtra("manga_description"));
+                    manga.setCoverUrl(getIntent().getStringExtra("manga_cover"));
+
+                    long mangaResult = mangaDAO.addReadMangaWithImage(manga, chapterNumber, "reading");
+                    Log.d("ReaderActivity", "Manga guardado: " + mangaResult);
+                } else {
+                    // Solo actualizar último capítulo leído
+                    mangaDAO.updateLastChapter(mangaId, chapterNumber);
+                    Log.d("ReaderActivity", "Manga actualizado - último capítulo: " + chapterNumber);
+                }
+
+                // 2. Verificar si el capítulo ya está guardado
+                if (mangaDAO.hasOfflinePages(chapterId)) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(ReaderActivity.this,
+                                "✅ Capítulo " + chapterNumber + " ya está guardado offline",
+                                Toast.LENGTH_SHORT).show();
+                    });
+                    return; // Ya existe, no guardar de nuevo
+                }
+
+                // 3. Guardar capítulo NUEVO
+                Chapter chapter = new Chapter();
+                chapter.setId(chapterId);
+                chapter.setChapterNumber(chapterNumber);
+                chapter.setTitle(chapterTitleText);
+                chapter.setPages(String.valueOf(pageUrls.size()));
+
+                long chapterResult = mangaDAO.addChapter(chapter, mangaId);
+                Log.d("ReaderActivity", "Capítulo guardado: " + chapterResult);
+
+                // 4. Guardar todas las páginas con imágenes
+                for (int i = 0; i < pageUrls.size(); i++) {
+                    long pageResult = mangaDAO.addPageWithImage(chapterId, i + 1, pageUrls.get(i));
+                    Log.d("ReaderActivity", "Página " + (i + 1) + " guardada: " + pageResult);
+
+                    int finalI = i;
+                    runOnUiThread(() -> {
+                        statusText.setVisibility(View.VISIBLE);
+                        statusText.setText("💾 Guardando capítulo " + chapterNumber + " - página " + (finalI + 1) + "/" + pageUrls.size());
+                    });
+                }
+
+                // 5. Notificar éxito
+                String finalMangaId = mangaId;
+                runOnUiThread(() -> {
+                    int totalChapters = mangaDAO.getChaptersByMangaId(finalMangaId).size();
+                    statusText.setText("✅ Capítulo " + chapterNumber + " guardado offline");
+                    Toast.makeText(ReaderActivity.this,
+                            "📚 Capítulo " + chapterNumber + " guardado (" + totalChapters + " capítulos offline)",
+                            Toast.LENGTH_LONG).show();
+
+                    statusText.postDelayed(() -> {
+                        if (statusText != null) {
+                            statusText.setVisibility(View.GONE);
+                        }
+                    }, 2000);
+                });
+
+            } catch (Exception e) {
+                Log.e("ReaderActivity", "Error guardando offline: " + e.getMessage());
+                runOnUiThread(() -> {
+                    Toast.makeText(ReaderActivity.this,
+                            "⚠️ Error al guardar offline: " + e.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                });
+            }
+        }).start();
     }
 
     private void updatePageIndicators() {
@@ -249,15 +341,12 @@ public class ReaderActivity extends AppCompatActivity implements PageAdapter.OnP
         }
 
         if (totalPages > 0) {
-            // Actualizar textos
             pageIndicator.setText("Página " + (currentPage + 1) + " de " + totalPages);
             currentPageText.setText((currentPage + 1) + " / " + totalPages);
 
-            // Actualizar botones
             btnPrevious.setEnabled(currentPage > 0);
             btnNext.setEnabled(currentPage < totalPages - 1);
 
-            // Cambiar texto del botón Next en la última página
             if (currentPage >= totalPages - 1) {
                 btnNext.setText("Terminar");
             } else {
@@ -269,12 +358,6 @@ public class ReaderActivity extends AppCompatActivity implements PageAdapter.OnP
     @Override
     public void onPageLoaded(int position) {
         loadedPages++;
-        // Opcional: mostrar progreso de carga
-        if (loadedPages == 1 && statusText.getVisibility() == View.VISIBLE) {
-            runOnUiThread(() -> {
-                statusText.setText("📖 Cargando imágenes... (" + loadedPages + "/" + totalPages + ")");
-            });
-        }
     }
 
     @Override
@@ -294,8 +377,6 @@ public class ReaderActivity extends AppCompatActivity implements PageAdapter.OnP
 
     @Override
     public void onBackPressed() {
-        // Suprimir warning de deprecación
-        //noinspection deprecation
         super.onBackPressed();
         finish();
     }

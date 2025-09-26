@@ -68,11 +68,16 @@ public class ReadMangaAdapter extends RecyclerView.Adapter<ReadMangaAdapter.Read
             mangaTitle.setText(manga.getTitle());
             mangaDescription.setText(manga.getDescription());
 
-            // Obtener información adicional de la base de datos
+            // ✅ Obtener información adicional de la base de datos
             MangaDAO.ReadMangaInfo readInfo = mangaDAO.getMangaReadInfo(manga.getId());
+            int chaptersCount = mangaDAO.getChaptersByMangaId(manga.getId()).size();
+
             if (readInfo != null) {
                 statusInfo.setText("Estado: " + getStatusText(readInfo.status));
-                lastChapterInfo.setText("Último capítulo: " + readInfo.lastChapter);
+                lastChapterInfo.setText("Último capítulo: " + readInfo.lastChapter +
+                        " • " + chaptersCount + " capítulos guardados");
+            } else {
+                lastChapterInfo.setText(chaptersCount + " capítulos guardados offline");
             }
 
             // Cargar imagen
@@ -86,19 +91,18 @@ public class ReadMangaAdapter extends RecyclerView.Adapter<ReadMangaAdapter.Read
                 mangaCover.setImageResource(R.drawable.placeholder_manga);
             }
 
-            // En el método bind(), cambia el click listener:
+            // ✅ Click listener - ir a capítulos offline
             itemView.setOnClickListener(v -> {
-                // Verificar si tenemos conexión o si es contenido offline
-                boolean fromOffline = true; // Marcamos como offline por defecto
-
-                Toast.makeText(context, "Abriendo " + manga.getTitle() + " (guardado localmente)", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,
+                        "Abriendo " + manga.getTitle() + " (" + chaptersCount + " capítulos offline)",
+                        Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(context, ChaptersActivity.class);
                 intent.putExtra("manga_id", manga.getId());
                 intent.putExtra("manga_title", manga.getTitle());
                 intent.putExtra("manga_description", manga.getDescription());
                 intent.putExtra("manga_cover", manga.getCoverUrl());
-                intent.putExtra("from_offline", true); // IMPORTANTE: Indica que viene de offline
+                intent.putExtra("from_offline", true);
                 context.startActivity(intent);
             });
         }

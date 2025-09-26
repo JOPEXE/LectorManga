@@ -36,6 +36,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        com.example.lectormanga.utils.NetworkHelper.logNetworkStatus(this);
+
+        String connectionType = com.example.lectormanga.utils.NetworkHelper.getConnectionType(this);
+        Toast.makeText(this, "📡 Conexión: " + connectionType, Toast.LENGTH_LONG).show();
+
+        if (com.example.lectormanga.utils.NetworkHelper.isMobileDataConnected(this)) {
+            Toast.makeText(this, "⚠️ Usando datos móviles - Puede haber problemas con la API", Toast.LENGTH_LONG).show();
+        }
+
+
         // Inicializar API
         mangaDxApi = new MangaDexApi();
 

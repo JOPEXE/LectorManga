@@ -23,7 +23,7 @@
     <!-- ChaptersActivity -->
     <string name="chapters_title">📖 Capítulos</string>
     <string name="loading_chapters">🔄 Cargando capítulos desde MangaDex...</string>
-    <string name="chapters_loaded">✅ %d capítulos disponibles</string>
+    <string name="chapters_loaded"> capítulos disponibles</string>
     <string name="no_chapters_english">❌ No se encontraron capítulos en inglés</string>
     <string name="chapters_from_mangadx">Capítulos cargados desde MangaDx</string>
     <string name="no_chapters_available">No hay capítulos disponibles en inglés</string>

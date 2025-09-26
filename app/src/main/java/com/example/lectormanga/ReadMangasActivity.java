@@ -84,7 +84,6 @@ public class ReadMangasActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Recargar cuando volvemos a esta activity
         loadReadMangas();
     }
 
