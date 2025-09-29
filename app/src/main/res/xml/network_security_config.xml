@@ -1,14 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
+    <!-- Configuración base que permite tráfico HTTP -->
     <base-config cleartextTrafficPermitted="true">
         <trust-anchors>
             <certificates src="system"/>
             <certificates src="user"/>
         </trust-anchors>
     </base-config>
+
+    <!-- ✅ Consumet API - Servidor principal -->
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">api.mangadx.org</domain>
-        <domain includeSubdomains="true">uploads.mangadx.org</domain>
-        <domain includeSubdomains="true">mangadx.org</domain>
+        <domain includeSubdomains="true">api.consumet.org</domain>
+        <domain includeSubdomains="true">consumet.org</domain>
+    </domain-config>
+
+    <!-- ✅ MangaKakalot - Proveedor recomendado -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">mangakakalot.com</domain>
+        <domain includeSubdomains="true">manganato.com</domain>
+        <domain includeSubdomains="true">mangakakalot.tv</domain>
+        <domain includeSubdomains="true">manganelo.com</domain>
+    </domain-config>
+
+    <!-- ✅ MangaHere - Proveedor alternativo -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">mangahere.cc</domain>
+        <domain includeSubdomains="true">mangahere.com</domain>
+        <domain includeSubdomains="true">mangahere.co</domain>
+    </domain-config>
+
+    <!-- ✅ MangaPill - Proveedor alternativo -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">mangapill.com</domain>
+    </domain-config>
+
+    <!-- ✅ MangaReader - Proveedor recomendado (NUEVO) -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">mangareader.to</domain>
+        <domain includeSubdomains="true">mangareader.net</domain>
+        <domain includeSubdomains="true">mangareader.tv</domain>
+        <domain includeSubdomains="true">cdn.mangareader.to</domain>
+    </domain-config>
+
+    <!-- ✅ MangaKakalot - Proveedor alternativo -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">api.mangadex.org</domain>
+        <domain includeSubdomains="true">uploads.mangadex.org</domain>
+        <domain includeSubdomains="true">mangadex.org</domain>
+    </domain-config>
+
+    <!-- ✅ CDNs comunes para imágenes de manga -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">imgur.com</domain>
+        <domain includeSubdomains="true">i.imgur.com</domain>
+        <domain includeSubdomains="true">cdnjs.cloudflare.com</domain>
     </domain-config>
 </network-security-config>

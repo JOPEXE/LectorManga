@@ -1,7 +1,5 @@
 import org.gradle.kotlin.dsl.implementation
 
-
-
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -45,7 +43,7 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-    // Nuevas dependencias - SINTAXIS CORRECTA CON COMILLAS DOBLES
+    // UI
     implementation(libs.recyclerview.v132)
     implementation("androidx.cardview:cardview:1.0.0")
 
@@ -53,12 +51,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:5.0.5")
     annotationProcessor("com.github.bumptech.glide:compiler:5.0.5")
 
-    // Para networking
-    implementation("com.squareup.okhttp3:okhttp:5.1.0")
+    // ⭐ Para networking - VERSIÓN OPTIMIZADA
+    implementation("com.squareup.okhttp3:okhttp:4.12.0") // Última versión estable
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0") // Para debugging
 }
-
-
-
-
-
-

@@ -28,7 +28,7 @@ public class ChaptersActivity extends AppCompatActivity implements ChapterAdapte
     private ImageView mangaCover;
     private TextView mangaTitle, mangaDescription, statusText;
     private Manga selectedManga;
-    private MangaDexApi mangaDxApi;
+    private MangaDexApi mangaDexApi;
     private MangaDAO mangaDAO;
     private boolean fromOffline = false;
 
@@ -37,20 +37,12 @@ public class ChaptersActivity extends AppCompatActivity implements ChapterAdapte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chapters);
 
-        // Inicializar API y DAO
-        mangaDxApi = new MangaDexApi();
+        mangaDexApi = new MangaDexApi();
         mangaDAO = new MangaDAO(this);
 
-        // Inicializar vistas
         initViews();
-
-        // Obtener datos del manga seleccionado
         getMangaData();
-
-        // Configurar RecyclerView
         setupRecyclerView();
-
-        // Cargar capítulos (online u offline)
         loadRealChapters();
     }
 
@@ -106,7 +98,7 @@ public class ChaptersActivity extends AppCompatActivity implements ChapterAdapte
 
     private void loadRealChapters() {
         if (selectedManga == null || selectedManga.getId() == null) {
-            statusText.setText("❌ Error: ID de manga no válido");
+            statusText.setText("❌ Error: ID no válido");
             return;
         }
 
@@ -117,34 +109,29 @@ public class ChaptersActivity extends AppCompatActivity implements ChapterAdapte
         }
     }
 
-    // ========== CARGA OFFLINE ==========
     private void loadOfflineChapters() {
-        statusText.setText("💾 Cargando capítulos guardados...");
+        statusText.setText("💾 Cargando offline...");
 
         new Thread(() -> {
             List<Chapter> offlineChapters = mangaDAO.getChaptersByMangaId(selectedManga.getId());
 
             runOnUiThread(() -> {
                 if (offlineChapters.isEmpty()) {
-                    statusText.setText("❌ No hay capítulos guardados offline\n\nBusca este manga desde la pantalla principal para descargar capítulos");
-                    Toast.makeText(this, "No hay capítulos offline. Búscalo en la pantalla principal.", Toast.LENGTH_LONG).show();
+                    statusText.setText("❌ No hay capítulos offline");
                 } else {
                     chapterList.clear();
                     chapterList.addAll(offlineChapters);
                     chapterAdapter.notifyDataSetChanged();
-
-                    statusText.setText("✅ " + offlineChapters.size() + " capítulos disponibles (OFFLINE)");
-                    Toast.makeText(this, "Capítulos cargados desde SQLite", Toast.LENGTH_SHORT).show();
+                    statusText.setText("✅ " + offlineChapters.size() + " capítulos (OFFLINE)");
                 }
             });
         }).start();
     }
 
-    // ========== CARGA ONLINE ==========
     private void loadOnlineChapters() {
-        statusText.setText("🔄 Cargando capítulos desde MangaDex...");
+        statusText.setText("🔄 Cargando capítulos...");
 
-        mangaDxApi.getChapters(selectedManga.getId(), 50, new MangaDexApi.ChapterCallback() {
+        mangaDexApi.getChapters(selectedManga.getId(), 100, new MangaDexApi.ChapterCallback() {
             @Override
             public void onSuccess(List<Chapter> chapters) {
                 runOnUiThread(() -> {
@@ -153,11 +140,9 @@ public class ChaptersActivity extends AppCompatActivity implements ChapterAdapte
                     chapterAdapter.notifyDataSetChanged();
 
                     if (chapters.isEmpty()) {
-                        statusText.setText("❌ No se encontraron capítulos en inglés");
-                        Toast.makeText(ChaptersActivity.this, "No hay capítulos disponibles en inglés", Toast.LENGTH_SHORT).show();
+                        statusText.setText("❌ Sin capítulos");
                     } else {
-                        statusText.setText("✅ " + chapters.size() + " capítulos disponibles");
-                        Toast.makeText(ChaptersActivity.this, "Capítulos cargados desde MangaDex", Toast.LENGTH_SHORT).show();
+                        statusText.setText("✅ " + chapters.size() + " capítulos");
                     }
                 });
             }
@@ -165,7 +150,7 @@ public class ChaptersActivity extends AppCompatActivity implements ChapterAdapte
             @Override
             public void onFailure(Exception e) {
                 runOnUiThread(() -> {
-                    statusText.setText("❌ Error al cargar capítulos");
+                    statusText.setText("❌ Error");
                     Toast.makeText(ChaptersActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
             }
@@ -174,8 +159,6 @@ public class ChaptersActivity extends AppCompatActivity implements ChapterAdapte
 
     @Override
     public void onChapterClick(Chapter chapter) {
-        Toast.makeText(this, "Abriendo capítulo " + chapter.getChapterNumber(), Toast.LENGTH_SHORT).show();
-
         Intent intent = new Intent(ChaptersActivity.this, ReaderActivity.class);
         intent.putExtra("chapter_id", chapter.getId());
         intent.putExtra("chapter_title", chapter.getTitle());
@@ -184,15 +167,15 @@ public class ChaptersActivity extends AppCompatActivity implements ChapterAdapte
         intent.putExtra("manga_title", selectedManga.getTitle());
         intent.putExtra("manga_description", selectedManga.getDescription());
         intent.putExtra("manga_cover", selectedManga.getCoverUrl());
-        intent.putExtra("from_offline", fromOffline); // ✅ Pasar flag offline
+        intent.putExtra("from_offline", fromOffline);
         startActivity(intent);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mangaDxApi != null) {
-            mangaDxApi.cleanup();
+        if (mangaDexApi != null) {
+            mangaDexApi.cleanup();
         }
     }
 
