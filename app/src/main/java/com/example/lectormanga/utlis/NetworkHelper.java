@@ -60,7 +60,7 @@ public class NetworkHelper {
                     networkInfo.isConnected();
         }
     }
-gir
+
     /**
      * Verifica si está conectado por datos móviles
      */
