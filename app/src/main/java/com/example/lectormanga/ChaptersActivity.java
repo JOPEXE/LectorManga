@@ -138,9 +138,8 @@ public class ChaptersActivity extends AppCompatActivity implements ChapterAdapte
                     chapterList.clear();
                     chapterList.addAll(chapters);
                     chapterAdapter.notifyDataSetChanged();
-
                     if (chapters.isEmpty()) {
-                        statusText.setText("❌ Sin capítulos");
+                        statusText.setText("❌ No se encontraron capítulos");
                     } else {
                         statusText.setText("✅ " + chapters.size() + " capítulos");
                     }

@@ -26,7 +26,7 @@
     <string name="chapters_loaded"> capítulos disponibles</string>
     <string name="no_chapters_english">❌ No se encontraron capítulos en inglés</string>
     <string name="chapters_from_mangadx">Capítulos cargados desde MangaDx</string>
-    <string name="no_chapters_available">No hay capítulos disponibles en inglés</string>
+    <string name="no_chapters_available">No hay capítulos disponibles</string>
     <string name="error_loading_chapters">❌ Error al cargar capítulos</string>
     <string name="opening_chapter">Abriendo capítulo %s</string>
     <string name="error_invalid_manga_id">Error: No hay datos del manga</string>
@@ -75,11 +75,7 @@
     <string name="chapters_activity_label">Capítulos</string>
     <string name="reader_activity_label">Lector</string>
 
-    <!-- Error Messages -->
-    <string name="error_connection">Error de conexión</string>
-    <string name="error_http">Error HTTP: %d</string>
-    <string name="error_processing_data">Error al procesar datos</string>
-    <string name="error_generic">Error: %s</string>
+
 
     <!-- Status Messages -->
     <string name="status_recyclerview_configured">RecyclerView con adapter configurado</string>
